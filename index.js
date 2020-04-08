@@ -16,7 +16,7 @@ if (cluster.isMaster){
   const app = express()
   const server = Server(app)
 
-  app.use(morgan('dev'))
+  app.use(morgan(`worker(${process.pid}) :method :url :status :response-time ms`))
 
   app.get('/', (req, res) => {
     res.send(`hello from worker(${process.pid})`)
