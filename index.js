@@ -12,7 +12,7 @@ if (cluster.isMaster && workerNum > 1){
   }
 
   cluster.on('exit', (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`)
+    console.log(`worker ${worker.process.pid} died`, {code, signal})
     cluster.fork()
   })
 } else {
@@ -32,4 +32,10 @@ function startWorker () {
   const port = process.env.PORT || 3000
   server.listen(port)
   console.log(`start worker(${process.pid}): port ${port}`)
+
+  if (cluster.isWorker) {
+    setTimeout(() => {
+      process.exit(1)
+    }, Math.random() * 30 * 1000)
+  }
 }
