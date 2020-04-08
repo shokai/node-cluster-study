@@ -3,7 +3,9 @@ const express = require('express')
 const { Server } = require('http')
 const morgan = require('morgan')
 
-if (cluster.isMaster){
+const workerNum = Number.parseInt(process.env.CLUSTER)
+
+if (cluster.isMaster && workerNum > 1){
   console.log(`start master(${process.pid})`)
   for (let i = 0; i < 4; i++) {
     cluster.fork()
@@ -14,6 +16,10 @@ if (cluster.isMaster){
     cluster.fork()
   })
 } else {
+  startWorker()
+}
+
+function startWorker () {
   const app = express()
   const server = Server(app)
 
